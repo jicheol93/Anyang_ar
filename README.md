@@ -1,11 +1,11 @@
-# KIST_AtrributeRecognition
+# KIST_AttributeRecognition
 
 __Installation__
 ---
 ```
 conda create -n anyang_ar python=3
 conda activate anyang_ar
-git clone https://github.com/jicheol93/KIST_AtrributeRecognition.git
+git clone https://github.com/jicheol93/KIST_AttributeRecognition.git
 cd anyang_ar
 pip install -r requirements.txt
 ```
