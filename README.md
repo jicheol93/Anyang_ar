@@ -13,19 +13,35 @@ pip install -r requirements.txt
 __Prepare Anyang Attribute Recognition dataset__
 ---
 ```
-datasets
-└── cuhkpedes
-    ├── annotations
-    │   ├── test.json
-    │   ├── train.json
-    │   └── val.json
-    ├── clip_vocab_vit.npy
-    └── imgs
-        ├── cam_a
-        ├── cam_b
-        ├── CUHK01
-        ├── CUHK03
-        ├── Market
-        ├── test_query
-        └── train_query
+Anyang_ar
+└── Anyang_data
+    ├── Attribute_labeling.xlsx
+    ├── train
+    └── test
+
+cd anyang_ar
+(change data path from prepare_Anyang_xxx.py)
+python prepare_Anyang_train.py --h
+python prepare_Anyang_train.py --h
+(--h option means filtering data lower than the height of 150 pixels.)
 ```
+__Train__
+---
+```
+python train_att_backbone_from_AR_Anyang.py --AR --name AR_Anyang_high_lr001_b128 --lr 0.001 --batchsize 256 --h --data_dir "/home/jicheol/Anyang_ar/Anyang_data/pytorch/"
+```
+
+__Inference__
+---
+```
+ python test_att_backbone_from_AR_Anyang.py --AR --name AR_Anyang_high_lr001_b128 --batchsize 256 -h --data_dir "/home/jicheol/Anyang_ar/Anyang_data/pytorch/" --which_epoch "last"
+```
+__Visualization__
+---
+```
+ python test_att_backbone_from_AR_Anyang.py --AR --name AR_Anyang_high_lr001_b128 --batchsize 256 -h --vis --data_dir "/home/jicheol/Anyang_ar/Anyang_data/pytorch/" --which_epoch "last"
+ 
+ Anyang_ar
+└── vis_image
+(visualization results are saved in vis_image)
+``'
