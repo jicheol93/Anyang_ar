@@ -1,4 +1,4 @@
-# KIST_AttributeRecognition
+# Anyang_AttributeRecognition
 
 __Installation__
 ---
