@@ -3,7 +3,7 @@
 __Installation__
 ---
 ```
-git clone https://github.com/jicheol93/KIST_AttributeRecognition.git
+git clone https://github.com/jicheol93/Anyang_ar.git
 cd anyang_ar
 conda env create -f requirements.txt
 ```
