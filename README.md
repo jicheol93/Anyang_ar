@@ -28,18 +28,18 @@ python prepare_Anyang_train.py --h
 __Train__
 ---
 ```
-python train_att_backbone_from_AR_Anyang.py --AR --name AR_Anyang_high_lr001_b128 --lr 0.001 --batchsize 256 --h --data_dir "/home/jicheol/Anyang_ar/Anyang_data/pytorch/"
+python train_att_backbone_from_AR_Anyang.py --AR --name AR_Anyang_high_lr001_b128 --lr 0.001 --batchsize 128 --h --data_dir "/home/jicheol/Anyang_ar/Anyang_data/pytorch/"
 ```
 
 __Inference__
 ---
 ```
- python test_att_backbone_from_AR_Anyang.py --AR --name AR_Anyang_high_lr001_b128 --batchsize 256 --h --data_dir "/home/jicheol/Anyang_ar/Anyang_data/pytorch/" --which_epoch "last"
+ python test_att_backbone_from_AR_Anyang.py --AR --name AR_Anyang_high_lr001_b128 --batchsize 128 --h --data_dir "/home/jicheol/Anyang_ar/Anyang_data/pytorch/" --which_epoch "last"
 ```
 __Visualization__
 ---
 ```
- python test_att_backbone_from_AR_Anyang.py --AR --name AR_Anyang_high_lr001_b128 --batchsize 256 --h --vis --data_dir "/home/jicheol/Anyang_ar/Anyang_data/pytorch/" --which_epoch "last"
+ python test_att_backbone_from_AR_Anyang.py --AR --name AR_Anyang_high_lr001_b128 --batchsize 128 --h --vis --data_dir "/home/jicheol/Anyang_ar/Anyang_data/pytorch/" --which_epoch "last"
  
 ![image](https://user-images.githubusercontent.com/39580015/187052365-3194588d-a5a9-420b-8e88-bd4ea831d48b.png)
 
