@@ -38,10 +38,9 @@ __Visualization__
 ---
 ```
  python test_att_backbone_from_AR_Anyang.py --AR --name AR_Anyang_high_lr001_b128 --batchsize 128 --h --vis --data_dir "/home/jicheol/Anyang_ar/Anyang_data/pytorch/" --which_epoch "last"
- 
-![image](https://user-images.githubusercontent.com/39580015/187052365-3194588d-a5a9-420b-8e88-bd4ea831d48b.png)
 
  Anyang_ar
 └── vis_image
 (visualization results are saved in vis_image)
+![image](https://user-images.githubusercontent.com/39580015/187052365-3194588d-a5a9-420b-8e88-bd4ea831d48b.png)
 ```
