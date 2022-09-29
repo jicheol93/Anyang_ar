@@ -46,7 +46,6 @@ dependencies:
   - decorator=5.1.0=pyhd3eb1b0_0
   - einops=0.3.0=py_0
   - et_xmlfile=1.1.0=py39h06a4308_0
-  - expat=2.4.4=h295c915_2
   - fancycompleter=0.9.1=py39hf3d152e_1002
   - ffmpeg=4.3=hf484d3e_0
   - filelock=3.4.0=pyhd3eb1b0_0

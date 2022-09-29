@@ -8,10 +8,10 @@ from PIL import Image
 import argparse
 
 parser = argparse.ArgumentParser(description='Train')
-parser.add_argument('--h', action="store_true", help="low resolution filter for height under 150")
+parser.add_argument('--h', action="store_true", help="low resolution filter for height under 100")
 opt = parser.parse_args()
 
-dict_train_label = pd.read_excel('./Anyang_data/Attribute_labeling.xlsx', sheet_name=0,engine='openpyxl')
+dict_train_label = pd.read_excel('Attribute_labeling.xlsx', sheet_name=0,engine='openpyxl')
 list_train_label = list(dict_train_label.items())
 
 ID_array = np.array(list_train_label[0][1])
@@ -118,56 +118,23 @@ for root, dirs, files in tqdm(os.walk(train_path, topdown=True)):
         item4 = item4_array[index]
 
         gender_label = gender_list.index(gender)
-        if hair_type == "long" or hair_type == "tied_hair":
-            hair_type_label = 0
-        elif hair_type == "normal":
-            hair_type_label = 1
-        else:
-            hair_type_label = 2
+        age_label = age_list.index(age)
+        tall_label = tall_list.index(tall)
+        hair_type_label = hair_type_list.index(hair_type) 
         hair_color_label = hair_color_list.index(hair_color)
         top_type_label = top_type_list.index(top_type)
-        if top_color == "beige" or top_color == "brown" or top_color == "light_brown":
-            top_color_label = 0
-        elif top_color == "black":
-            top_color_label = 1
-        elif top_color == "blue" or top_color == "blue_green" or top_color == "navy" or top_color == "navy_blue" or top_color == "sky_blue":
-            top_color_label = 2
-        elif top_color == "red" or top_color == "burgundy" or top_color == "red_brown":
-            top_color_label = 3
-        elif top_color == "gray" or top_color == "dark_gray":
-            top_color_label = 4
-        elif top_color == "green" or top_color == "navy_green" or top_color == "khaki":
-            top_color_label = 5
-        elif top_color == "orange" or top_color == "yellow" or top_color == "yellow_green":
-            top_color_label = 6
-        elif top_color == "pink":
-            top_color_label = 7
-        elif top_color == "purple":
-            top_color_label = 8
-        elif top_color == "white":
-            top_color_label = 9
-        if bottom_type == "dress" or bottom_type == "long_pants" or bottom_type == "long_skirt":
-            bottom_type_label = 0
-        else:
-            bottom_type_label = 1
-        if bottom_color == "beige" or bottom_color == "brown":
-            bottom_color_label = 0
-        elif bottom_color == "black":
-            bottom_color_label = 1
-        elif bottom_color == "blue" or bottom_color == "navy_blue" or bottom_color == "navy_green":
-            bottom_color_label = 2
-        elif bottom_color == "red" or bottom_color == "burgundy":
-            bottom_color_label = 3
-        elif bottom_color == "gray" or bottom_color == "dark_gray":
-            bottom_color_label = 4
-        elif bottom_color == "pink":
-            bottom_color_label = 5
-        elif bottom_color == "purple":
-            bottom_color_label = 6
-        elif bottom_color == "white":
-            bottom_color_label = 7
-        label_name = [gender_label, hair_type_label, hair_color_label,
-                top_type_label, top_color_label, bottom_type_label, bottom_color_label]
+        top_color_label = top_color_list.index(top_color)
+        bottom_type_label = bottom_type_list.index(bottom_type)
+        bottom_color_label = bottom_color_list.index(bottom_color)
+        item_label = [0 for i in item_list]
+        if item1 in item_list : item_label[item_list.index(item1)] = 1
+        if item2 in item_list : item_label[item_list.index(item2)] = 1
+        if item3 in item_list : item_label[item_list.index(item3)] = 1
+        if item4 in item_list : item_label[item_list.index(item4)] = 1
+        item_label = ''.join(map(str,item_label))
+
+        label_name = [gender_label, age_label, tall_label, hair_type_label, hair_color_label,
+                top_type_label, top_color_label, bottom_type_label, bottom_color_label, item_label]
 
         att_list.append(label_name)
 

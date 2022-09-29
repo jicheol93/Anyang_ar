@@ -17,7 +17,6 @@ from PIL import Image
 import time
 import os
 from model import ft_net, ft_net_dense, ft_net_NAS, PCB, AttPS_proxy, AttPS_proxy_128, AttPS_proxy_2048, AttPS_proxy_part_pool, AR, AR_SpatialAtt
-from random_erasing import RandomErasing
 import yaml
 import math
 from shutil import copyfile
@@ -177,14 +176,14 @@ data_transforms = {
 }
 
 
-test_high = ''
+data_high = ''
 if opt.h:
-     test_high = '_high'
+     data_high = '_high'
 
 image_datasets = {}
-image_datasets['train'] = datasets.ImageFolder(os.path.join(data_dir, 'train'),
+image_datasets['train'] = datasets.ImageFolder(os.path.join(data_dir, 'train' + data_high),
                                           data_transforms['train'])
-image_datasets['test'] = datasets.ImageFolder(os.path.join(data_dir, 'test' + test_high),
+image_datasets['test'] = datasets.ImageFolder(os.path.join(data_dir, 'test' + data_high),
                                          data_transforms['test'])
 
 #balanced_sampler = sampler.BalancedSampler(image_datasets['train'], batch_size=opt.batchsize, images_per_class=)
@@ -214,6 +213,7 @@ y_err['test'] = []
 
 color_list = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple', 'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan']
 
+"""
 gender_list = ['female', 'male']                    
 age_list = ["age under 10", "age 10-20", "age 20-30", "age 30-40", "age 40-50", "age over 50"]                       
 tall_list = ["under 110cm", "120-130cm", "130-140cm", "140-150cm", "150-160cm", "160-170cm", "170-180cm", "over 180cm"]         
@@ -231,6 +231,15 @@ item_list = ['backpack', 'bag', 'bicycle', 'carrier', 'cellphone', 'electric_whe
         'sunglasses', 'umbrella', 'water_bottle']
 
 att_list = [gender_list, age_list, tall_list, hair_type_list, hair_color_list, top_type_list, top_color_list, bottom_type_list, bottom_color_list]
+"""
+gender_list = ['female', 'male']                    
+hair_type_list = ['hair type long', 'hair type normal', 'hair type others']
+hair_color_list = ['hair color black', 'hair color brown', 'hair color yellow']
+top_type_list = ['long sleeve', 'short sleeve'] 
+top_color_list = ['top color brown', 'top color black', 'top color blue', 'top color red', 'top color gray', 'top color green', 'top color yellow', 'top color pink', 'top color purple', 'top color white'] 
+bottom_type_list = ['long lower body clothing', 'short lower body clothing'] 
+bottom_color_list = ['bottom color brown', 'bottom color black', 'bottom color blue', 'bottom color red', 'bottom color gray', 'bottom color pink', 'bottom color purple', 'bottom color white']
+att_list = [gender_list, hair_type_list, hair_color_list, top_type_list, top_color_list, bottom_type_list, bottom_color_list]
 
 def test_model(model, criterion, optimizer, scheduler, num_epochs=25):
     since = time.time()
@@ -246,7 +255,7 @@ def test_model(model, criterion, optimizer, scheduler, num_epochs=25):
             att_keys = test_att_keys
 
             running_loss = 0.0
-            running_corrects = [0 for i in range(26)]
+            running_corrects = [0 for i in range(7)]
 
             img_count = 0
 
@@ -300,7 +309,7 @@ def test_model(model, criterion, optimizer, scheduler, num_epochs=25):
 
                         plt.subplot(1, 2, 2)
                         color_idx = 0
-                        for y in range(26):
+                        for y in range(7):
                             if y<9:
                                 att_score = np.round(np.array(preds[y][0][i].cpu()),2)
                                 att_name = att_list[y][int(preds[y][1][i])]
@@ -314,7 +323,7 @@ def test_model(model, criterion, optimizer, scheduler, num_epochs=25):
                                     att_score = np.round(np.array(preds[y][0][i].cpu()),2)
                                     att_name = item_list[y-9]
                                     att_info = att_name + ": "+str(att_score)
-                                    plt.text(0,0.9 - color_idx*0.06, att_info, color=color_list[color_idx], fontsize=15)
+                                    plt.text(0,0.9 - color_idx*0.1, att_info, color=color_list[color_idx], fontsize=15)
                                     color_idx +=1
 
                             plt.axis('off')
@@ -330,16 +339,16 @@ def test_model(model, criterion, optimizer, scheduler, num_epochs=25):
                 else :  # for the old version like 0.3.0 and 0.3.1
                     running_loss += loss.data[0] * now_batch_size
 
-                for i in range(26):
+                for i in range(7):
                     running_corrects[i] += float(torch.sum(preds[i][1] == ar_labels[i].data))
 
             avg_epoch_acc = 0
-            for i in range(26):
+            for i in range(7):
                 epoch_acc = running_corrects[i] / (dataset_sizes[phase])
                 avg_epoch_acc += epoch_acc
                 print('{} Acc: {:.4f}'.format(phase, epoch_acc))
 
-            avg_epoch_acc = avg_epoch_acc / 26.0
+            avg_epoch_acc = avg_epoch_acc / 7.0
             epoch_loss = running_loss / (dataset_sizes[phase])
             print('{} Loss: {:.4f} Total Acc: {:.4f}'.format(
                 phase, epoch_loss, avg_epoch_acc))
@@ -355,7 +364,8 @@ def test_model(model, criterion, optimizer, scheduler, num_epochs=25):
     return model
 
 
-num_cat = [2, 6, 8, 8, 3, 2, 23, 5, 14, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+#num_cat = [2, 6, 8, 8, 3, 2, 23, 5, 14, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+num_cat = [2, 3, 3, 2, 10, 2, 8]
 if opt.AR:
     if opt.SpatialAtt:
         model = AR_SpatialAtt(num_cat) 

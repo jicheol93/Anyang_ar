@@ -368,6 +368,38 @@ class Regularizer_AMD(nn.Module):
 
         return rw 
 
+def focal_loss(input_values, gamma):
+    """Computes the focal loss"""
+    p = torch.exp(-input_values)
+    loss = (1 - p) ** gamma * input_values
+    return loss.mean()
+
+class FocalLoss(nn.Module):
+    def __init__(self, weight=None, gamma=2):
+        super(FocalLoss, self).__init__()
+        assert gamma >= 0
+        self.gamma = gamma
+        self.weight = weight
+
+    def forward(self, x, target):
+        return focal_loss(F.cross_entropy(x, target, reduction='none', weight=self.weight), self.gamma)
+
+class AMD_Regularizer(nn.Module):                                                   
+    def __init__(self, num_cat):                                                    
+        super(AMD_Regularizer, self).__init__()                                     
+        self.nb_classes = num_cat                                                   
+                                                                                    
+    def forward(self, att, num_inst):                                               
+        mc = self.nb_classes * 1 # for one proxy in one class                       
+        norm_att = l2_norm(att)                                                     
+        att_1 = att.reshape(1,att.shape[0],-1)                                      
+        att_2 = att.reshape(att.shape[0],1,-1)                                      
+        e_dist = (att_1-att_2).pow(2).sum(-1).triu(diagonal=1)                      
+        mu = 2.0 / (mc**2 - mc) * torch.sum(e_dist)                                 
+        residual = torch.sum(((e_dist - mu- num_inst)**2).triu(diagonal=1))         
+        rw = 2.0 / (mc**2 - mc) * residual                                          
+        return rw    
+
 """
 # We use PyTorch Metric Learning library for the following codes.
 # Please refer to "https://github.com/KevinMusgrave/pytorch-metric-learning" for details.
@@ -431,3 +463,4 @@ class NPairLoss(nn.Module):
         loss = self.loss_func(embeddings, labels)
         return loss
 """
+

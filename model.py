@@ -34,7 +34,7 @@ def weights_init_classifier(m):
     classname = m.__class__.__name__
     if classname.find('Linear') != -1:
         init.normal_(m.weight.data, std=0.001)
-        init.constant_(m.bias.data, 0.0)
+        #init.constant_(m.bias.data, 0.0)
 
 ######################################################################
 class BasicConv(nn.Module):
@@ -137,9 +137,11 @@ class ClassBlock_AR(nn.Module):
         add_block.apply(weights_init_kaiming)
 
         classifier = []
-        classifier += [nn.Linear(num_bottleneck, class_num)]
+        #classifier += [nn.Linear(num_bottleneck, class_num)]
+        #classifier += [nn.utils.weight_norm(nn.Linear(num_bottleneck, class_num,bias=False),name='weight')]
+        classifier += [nn.utils.weight_norm(nn.Linear(num_bottleneck, class_num,bias=False))]
         ### for AR pretraining as bs
-        classifier += [nn.BatchNorm1d(class_num)]
+        #classifier += [nn.BatchNorm1d(class_num)]
         ###
         classifier = nn.Sequential(*classifier)
         classifier.apply(weights_init_classifier)

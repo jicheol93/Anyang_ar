@@ -158,6 +158,8 @@ since = time.time()
 inputs_tmp, classes_tmp = next(iter(dataloaders['train']))
 print(time.time()-since)
 
+num_inst= [[51435, 65711], [38921, 70420, 7805], [92496, 24578, 72], [67356, 49790], [13654, 20155, 20261, 9367, 8516, 9754, 4490, 7760, 7393, 15796], [97393, 19753], [9497, 69764, 25216, 16, 9697, 252, 469, 2235]]
+
 ######################################################################
 # Training the model
 # ------------------
@@ -202,7 +204,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
                 #att_keys = val_att_keys
 
             running_loss = 0.0
-            running_corrects = [0 for i in range(26)]
+            running_corrects = [0 for i in range(7)]
 
             # Iterate over data.
             for data in dataloaders[phase]:
@@ -239,6 +241,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
 
                 for i in range(num_att):
                     loss += criterion(outputs[i], ar_labels[i])
+                    loss += AMD_reg[i](getattr(model, "ar_local_"+str(i)).classifier[0]._parameters['weight_v'], 1.0/torch.FloatTensor(num_inst[i]).cuda())
                     score = sm(outputs[i])
                     preds.append(torch.max(score.data,1))
 
@@ -260,16 +263,16 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
                 else :  # for the old version like 0.3.0 and 0.3.1
                     running_loss += loss.data[0] * now_batch_size
 
-                for i in range(26):
+                for i in range(7):
                     running_corrects[i] += float(torch.sum(preds[i][1] == ar_labels[i].data))
 
             avg_epoch_acc = 0
-            for i in range(26):
+            for i in range(7):
                 epoch_acc = running_corrects[i] / (dataset_sizes[phase])
                 avg_epoch_acc += epoch_acc
                 print('{} Acc: {:.4f}'.format(phase, epoch_acc))
 
-            avg_epoch_acc = avg_epoch_acc / 26.0
+            avg_epoch_acc = avg_epoch_acc / 7.0
             epoch_loss = running_loss / (dataset_sizes[phase])
             print('{} Loss: {:.4f} Total Acc: {:.4f}'.format(
                 phase, epoch_loss, avg_epoch_acc))
@@ -339,7 +342,8 @@ def save_network(network, epoch_label):
 # Load a pretrainied model and reset final fully connected layer.
 #
 
-num_cat = [2, 6, 8, 8, 3, 2, 23, 5, 14, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+#num_cat = [2, 6, 8, 8, 3, 2, 23, 5, 14, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+num_cat = [2, 3, 3, 2, 10, 2, 8]
 if opt.AR:
     if opt.SpatialAtt:
         model = AR_SpatialAtt(num_cat) 
@@ -360,8 +364,8 @@ if opt.AR:
              #{'params': model.att_block.parameters(), 'lr': 100*opt.lr},
          ], weight_decay=5e-4, momentum=0.9, nesterov=True)
 
-# Decay LR by a factor of 0.1 every 40 epochs
-exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=10, gamma=0.1)
+# Decay LR by a factor of 0.1 every 5 epochs
+exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=5, gamma=0.1)
 ######################################################################
 # Train and evaluate
 # ^^^^^^^^^^^^^^^^^^
@@ -382,6 +386,8 @@ with open('%s/opts.yaml'%dir_name,'w') as fp:
 # model to gpu
 model = model.cuda()
 criterion = nn.CrossEntropyLoss().cuda()
+#criterion = losses.FocalLoss().cuda()
+AMD_reg = [losses.AMD_Regularizer(num_cat[i]) for i in range(len(num_cat))]
 
-model = train_model(model, criterion, optimizer_ft, exp_lr_scheduler, num_epochs=20)
+model = train_model(model, criterion, optimizer_ft, exp_lr_scheduler, num_epochs=10)
 
