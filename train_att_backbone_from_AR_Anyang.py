@@ -374,7 +374,7 @@ exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=5, gamma=0.1)
 #
 dir_name = os.path.join('./model',name)
 if not os.path.isdir(dir_name):
-    os.mkdir(dir_name)
+    os.mkdirs(dir_name)
 #record every run
 copyfile('./train_att_backbone_from_AR_Anyang.py', dir_name+'/train_att_backbone_from_AR_Anyang.py')
 copyfile('./model.py', dir_name+'/model.py')
