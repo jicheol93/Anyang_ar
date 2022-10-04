@@ -48,13 +48,13 @@ item_list = ['backpack', 'bag', 'bicycle', 'carrier', 'cellphone', 'electric_whe
         'sunglasses', 'umbrella', 'water_bottle']
 
 # You need to change this line to your dataset download path
-download_path = '/home/jicheol/Anyang_ar/Anyang_data/test'
+download_path = './Anyang_data/test'
 
 if not os.path.isdir(download_path):
     print('please change the download_path')
 
 # You need to change this line to your dataset save path
-save_path = '/home/jicheol/Anyang_ar/Anyang_data' + '/pytorch'
+save_path = './Anyang_data' + '/pytorch_BS'
 if not os.path.isdir(save_path):
     os.mkdir(save_path)
 
@@ -130,19 +130,19 @@ for root, dirs, files in tqdm(os.walk(test_path, topdown=True)):
             hair_type_label = 2
         hair_color_label = hair_color_list.index(hair_color)
         top_type_label = top_type_list.index(top_type)
-        if top_color == "beige" or top_color == "brown" or top_color == "light_brown":
+        if top_color == "beige" or top_color == "brown" or top_color == "light_brown" or top_color == "red_brown":
             top_color_label = 0
         elif top_color == "black":
             top_color_label = 1
-        elif top_color == "blue" or top_color == "blue_green" or top_color == "navy" or top_color == "navy_blue" or top_color == "sky_blue":
+        elif top_color == "blue" or top_color == "navy_green" or top_color == "blue_green" or top_color == "navy" or top_color == "navy_blue" or top_color == "sky_blue":
             top_color_label = 2
-        elif top_color == "red" or top_color == "burgundy" or top_color == "red_brown":
+        elif top_color == "red" or top_color == "burgundy" or top_color == "orange":
             top_color_label = 3
         elif top_color == "gray" or top_color == "dark_gray":
             top_color_label = 4
-        elif top_color == "green" or top_color == "navy_green" or top_color == "khaki":
+        elif top_color == "green" or top_color == "khaki":
             top_color_label = 5
-        elif top_color == "orange" or top_color == "yellow" or top_color == "yellow_green":
+        elif top_color == "yellow" or top_color == "yellow_green":
             top_color_label = 6
         elif top_color == "pink":
             top_color_label = 7
@@ -150,6 +150,8 @@ for root, dirs, files in tqdm(os.walk(test_path, topdown=True)):
             top_color_label = 8
         elif top_color == "white":
             top_color_label = 9
+#         elif top_color == "orange":
+#             top_color_label = 10
         if bottom_type == "dress" or bottom_type == "long_pants" or bottom_type == "long_skirt":
             bottom_type_label = 0
         else:
@@ -158,9 +160,9 @@ for root, dirs, files in tqdm(os.walk(test_path, topdown=True)):
             bottom_color_label = 0
         elif bottom_color == "black":
             bottom_color_label = 1
-        elif bottom_color == "blue" or bottom_color == "navy_blue" or bottom_color == "navy_green":
+        elif bottom_color == "blue" or bottom_color == "navy_blue" or bottom_color == "navy_green" or bottom_color == "navy" or bottom_color == "sky_blue":
             bottom_color_label = 2
-        elif bottom_color == "red" or bottom_color == "burgundy":
+        elif bottom_color == "burgundy":
             bottom_color_label = 3
         elif bottom_color == "gray" or bottom_color == "dark_gray":
             bottom_color_label = 4
